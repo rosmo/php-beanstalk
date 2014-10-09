@@ -604,7 +604,7 @@ bool cmd_put(bsc *svr, char *value, int value_len)
 	return true;
 }
 
-/* {{{ proto bool beanstalk_put(object beanstalk, string tube [, mixed var [, int flag [, int exptime ] ] ])
+/* {{{ proto int beanstalk_put(object beanstalk, string tube [, mixed var [, int flag [, int exptime ] ] ])
    Sets the value of an item. Item may exist or not */
 PHP_FUNCTION(beanstalk_put)
 {
@@ -639,9 +639,10 @@ PHP_FUNCTION(beanstalk_put)
 
 	if(cmd_put(svr, value, value_len) && g_put_info) {
 		if(BSC_PUT_RES_INSERTED == g_put_info->response.code) {
+			RETVAL_LONG(g_put_info->response.id);
 			g_put_info = NULL;
 			put_flag = false;
-			RETURN_TRUE;
+			return;
 		}
 	}
 
